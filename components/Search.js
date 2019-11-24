@@ -1,10 +1,24 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import {useDispatch, useSelector} from 'react-redux';
 
 import Colors from '../constants/Colors';
+import { searchBusiness, searching } from '../store/actions/business';
 
-const Search = props => {
+const Search = () => {
+  const [searchText, setSearchText] = useState(search);
+  const dispatch = useDispatch()
+  const search = useSelector(state => state.business.search, []);
+
+  useEffect(() => {
+    setSearchText(search)
+  }, [search])
+
+  const handleSearch = async () => {
+    await dispatch(searching(searchText));
+    await dispatch(searchBusiness(searchText))
+  }
   return (
     <View style={styles.container}>
       <View style={styles.containerTextInput}>
@@ -13,6 +27,9 @@ const Search = props => {
           placeholderTextColor="white"
           style={styles.textInput}
           returnKeyType="search"
+          value={searchText}
+          onChangeText={text => setSearchText(text)}
+          onSubmitEditing={handleSearch}
         />
       </View>
     </View>

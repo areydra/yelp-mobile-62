@@ -5,6 +5,8 @@ export const FETCH_BUSINESS = 'FETCH_BUSINESS';
 export const SEARCH_BUSINESS = 'SEARCH_BUSINESS';
 export const DETAILS_BUSINESS = 'DETAILS_BUSINESS';
 export const LOAD_MORE_BUSINESS = 'LOAD_MORE_BUSINESS';
+export const RESET_SEARCH = 'RESET_SEARCH';
+export const SEARCHING = 'SEARCHING';
 
 const url = 'https://api.yelp.com/v3';
 const location = 'New York City';
@@ -31,11 +33,11 @@ export const fetchBusiness = () => {
   };
 };
 
-export const loadMoreBusiness = offset => {
+export const loadMoreBusiness = (offset, term) => {
   return async dispatch => {
     await axios
       .get(
-        `${url}/businesses/search?location=${location}&offset=${offset}&limit=20`,
+        `${url}/businesses/search?location=${location}&offset=${offset}&limit=20&term=${term}`,
         config,
       )
       .then(res => {
@@ -50,10 +52,14 @@ export const loadMoreBusiness = offset => {
 
 export const searchBusiness = term => {
   return async dispatch => {
-    await axios
-      .get(`${url}/businesses/search?term=${term}&location=${location}`, config)
-      .then(res => dispatch({type: SEARCH_BUSINESS, payload: res.data}))
-      .catch(err => console.log(err));
+    if(term.length){
+      await axios
+        .get(`${url}/businesses/search?term=${term}&location=${location}`, config)
+        .then(res => dispatch({type: SEARCH_BUSINESS, payload: res.data.businesses, search: term}))
+        .catch(err => console.log(err));
+    }else{
+      dispatch({type: SEARCH_BUSINESS, payload: 'reset', search: ''})
+    }
   };
 };
 
@@ -65,3 +71,15 @@ export const detailsBusiness = id => {
           .catch(err => console.log(err));
     }
 }
+
+export const resetSearch = () => {
+  return async dispatch => {
+    dispatch({type: RESET_SEARCH});
+  };
+};
+
+export const searching = search => {
+  return async dispatch => {
+    dispatch({type: SEARCHING, search: search});
+  };
+};

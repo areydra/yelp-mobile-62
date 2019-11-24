@@ -67,9 +67,9 @@ const Details = props => {
           activeDotIndex={activeIndex}
           containerStyle={{marginTop: -60}}
           dotStyle={{
-            width: 30,
+            width: 20,
             height: 5,
-            marginHorizontal: -10,
+            marginHorizontal: -5,
           }}
           inactiveDotOpacity={0.4}
           inactiveDotScale={0.6}
