@@ -32,9 +32,11 @@ List transactions
 ## Screenshots
   <p align="center">
     <span>
-      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-1e99dae07aed10fad.gif" width="250px" />
+      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-25152f0def2dd5fb8.gif" width="250px" />
       &nbsp;&nbsp;
-      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-1e99dae07aed10fad.gif" width="250px" />
+      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-320a4dcd566aebecd.gif" width="250px" />
+      &nbsp;&nbsp;
+      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-47d485c372b8ca0bd.gif" width="250px" />
     </span>
   </p>
   
