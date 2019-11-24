@@ -10,7 +10,7 @@
 - [Release APK](#release-apk)
 
 ## Introduction
-List transactions
+Fetch data from third party api with yelp.com
 
 ## Features
 * Search
