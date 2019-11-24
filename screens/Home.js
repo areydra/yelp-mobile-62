@@ -1,54 +1,73 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
-  Image,
   View,
   StyleSheet,
   ActivityIndicator,
   FlatList,
-  TextInput,
 } from 'react-native';
 
 import Card from '../components/Card';
-import Search from '../components/Search'
-import { fetchBusiness } from '../store/actions/business';
+import Search from '../components/Search';
+import {fetchBusiness, loadMoreBusiness} from '../store/actions/business';
+import Colors from '../constants/Colors';
 
 const Home = () => {
-  // const data = useSelector(state => state.business.business)
-  let data = [
-    {
-      id: 'cool',
-      name: 'empty',
-    },
-  ];
-
-  const dispatch = useDispatch()
+  const data = useSelector(state => state.business.business);
+  const [offset, setOffset] = useState(1);
+  const [isRefresh, setIsRefresh] = useState(false);
+  const [isRefreshLoadMore, setIsRefreshLoadMore] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+    setOffset(state => state + 1);
+  }, []);
 
-  const fetchData = async() => {
+  const fetchData = async () => {
     await dispatch(fetchBusiness());
-  }
+    setIsRefresh(false);
+  };
 
   const renderCard = data => {
     return <Card business={data.item} />;
   };
 
-  return (
+  const loadMore = async () => {
+    await setIsRefreshLoadMore(true);
+    await dispatch(loadMoreBusiness(offset + 1));
+    setOffset(state => state + 1);
+    setIsRefreshLoadMore(false);
+  };
+
+  return data.length ? (
     <View style={{flex: 1}}>
       <FlatList
-        keyExtractor={data => data.id}
+        onRefresh={fetchData}
+        refreshing={isRefresh}
+        keyExtractor={(data, index) => index}
         data={data}
         renderItem={renderCard}
         horizontal={false}
         numColumns={2}
         showsVerticalScrollIndicator={false}
-        columnWrapperStyle={{justifyContent: 'space-around'}}
-        style={{marginTop: 10}}
+        columnWrapperStyle={{justifyContent: 'space-around', marginBottom: 10}}
+        style={{marginTop: 20}}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
       />
+      {isRefreshLoadMore ? (
+        <ActivityIndicator size="large" color={Colors.primary} style={{ backgroundColor: 'transparent' }} />
+      ) : null}
+    </View>
+  ) : (
+    <View style={{flex: 1, justifyContent: 'center'}}>
+      {data === 'null' ? (
+        <Text>Data not found</Text>
+      ) : (
+        <ActivityIndicator size="small" color={Colors.primary} />
+      )}
     </View>
   );
 };
@@ -56,9 +75,9 @@ const Home = () => {
 const styles = StyleSheet.create({});
 
 Home.navigationOptions = () => {
-    return {
-      headerTitle: <Search />,
-    };
-}
+  return {
+    headerTitle: <Search />,
+  };
+};
 
 export default Home;

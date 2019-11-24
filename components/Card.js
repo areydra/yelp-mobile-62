@@ -9,14 +9,14 @@ const Card = props => {
   return props.business.name === 'empty' ? (
     <View style={{...styles.container, backgroundColor: 'transparent'}} />
   ) : (
-    <TouchableOpacity style={styles.container} onPress={() => props.navigation.navigate('Details', {businessDetails: props.business})}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={() => props.navigation.navigate('Details', {idBusiness: props.business.id, nameBusiness: props.business.name})}>
       <View style={styles.containerImage}>
-        <Image style={styles.cardImage} />
+        <Image style={styles.cardImage} source={{uri: props.business.image_url}} />
       </View>
       <View style={styles.containerText}>
         <Text style={styles.textName}>{props.business.name}</Text>
-        <Text>{props.business.reviews} Reviews</Text>
-        <Text>{props.business.stars} Stars</Text>
+        <Text>{props.business.review_count} Reviews</Text>
+        <Text>{props.business.rating} Stars</Text>
       </View>
     </TouchableOpacity>
   );
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   cardImage: {
     width: width / 2.2,
     height: width / 3,
-    backgroundColor: 'red',
+    backgroundColor: 'transparent',
     borderRadius: 5
   },
   containerText: {

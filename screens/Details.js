@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   Image,
@@ -6,36 +6,56 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-ionicons';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import {useSelector, useDispatch} from 'react-redux';
+import _ from 'lodash';
 
 import Colors from '../constants/Colors';
+import {detailsBusiness} from '../store/actions/business';
 
-const {width} = Dimensions.get('window')
+const {width} = Dimensions.get('window');
 
 const Details = props => {
-  const details = props.navigation.getParam('businessDetails');
-  const carouselData = [{name: 'areydra'}, {name: 'desfikri'}];
-  const [activeIndex, setActiveIndex] = useState(0) 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const idBusiness = props.navigation.getParam('idBusiness');
+  const businessDetails = useSelector(state => state.business.detailsBusiness);
+  const dollarActive = businessDetails.price ? _.range(1, businessDetails.price.length + 1) : []
+  const dollarInActive = businessDetails.price ? _.range(1, 4 - dollarActive.length + 1) : [1,2,3,4]
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (businessDetails.id !== idBusiness) {
+      fetchBusinessDetails();
+    }
+  }, []);
+
+  const fetchBusinessDetails = async () => {
+    await dispatch(detailsBusiness(idBusiness));
+  };
 
   const _renderImage = item => {
     return (
       <View style={styles.containerImage}>
-        <Text>{item.item.name}</Text>
+        <Image
+          source={{uri: item.item}}
+          style={{width: '100%', height: '100%'}}
+        />
       </View>
     );
   };
 
-  return (
+  return businessDetails.id === idBusiness ? (
     <View style={styles.container}>
       <View style={{alignItems: 'center'}}>
         <Carousel
-          data={carouselData}
+          data={businessDetails.photos}
           renderItem={_renderImage}
-          sliderWidth={width/1.13}
-          itemWidth={width/1.13}
+          sliderWidth={width / 1.13}
+          itemWidth={width / 1.13}
           autoplay={true}
           loop={true}
           layout={'default'}
@@ -43,55 +63,62 @@ const Details = props => {
           onSnapToItem={index => setActiveIndex(index)}
         />
         <Pagination
-          dotsLength={carouselData.length}
+          dotsLength={businessDetails.photos.length}
           activeDotIndex={activeIndex}
           containerStyle={{marginTop: -60}}
           dotStyle={{
             width: 30,
             height: 5,
+            marginHorizontal: -10,
           }}
           inactiveDotOpacity={0.4}
           inactiveDotScale={0.6}
         />
       </View>
       <View style={styles.containerReviews}>
-        <Text style={styles.numberReviews}>7840</Text>
+        <Text style={styles.numberReviews}>{businessDetails.review_count}</Text>
         <Text style={styles.textCenter}>Reviews</Text>
       </View>
       <View style={{flexDirection: 'row'}}>
         <View style={{...styles.border, borderEndWidth: 0.5}}>
           <Text style={{...styles.textCenter, marginRight: 5, fontSize: 20}}>
-            4.5
+            {businessDetails.rating}
           </Text>
           <Icon name="star-outline" />
         </View>
         <View style={{...styles.border, borderStartWidth: 0.5}}>
-          <Image
-            source={require('../assets/icons/dollar_active.png')}
-            style={{width: 20, height: 20}}
-          />
-          <Image
-            source={require('../assets/icons/dollar_active.png')}
-            style={{width: 20, height: 20}}
-          />
-          <Image
-            source={require('../assets/icons/dollar.png')}
-            style={{width: 20, height: 20}}
-          />
-          <Image
-            source={require('../assets/icons/dollar.png')}
-            style={{width: 20, height: 20}}
-          />
+          {dollarActive.length
+            ? dollarActive.map(index => (
+                <Image
+                  key={index}
+                  source={require('../assets/icons/dollar_active.png')}
+                  style={{width: 20, height: 20}}
+                />
+              ))
+            : null}
+          {dollarInActive.length
+            ? dollarInActive.map(index => (
+                <Image
+                  key={index}
+                  source={require('../assets/icons/dollar.png')}
+                  style={{width: 20, height: 20}}
+                />
+              ))
+            : null}
         </View>
       </View>
+    </View>
+  ) : (
+    <View style={{...styles.container, justifyContent: 'center'}}>
+      <ActivityIndicator size="large" color={Colors.primary} />
     </View>
   );
 };
 
 Details.navigationOptions = navigationData => {
-  const details = navigationData.navigation.getParam('businessDetails');
+  const name = navigationData.navigation.getParam('nameBusiness');
   return {
-    headerTitle: details.name,
+    headerTitle: name,
     headerTintColor: 'white',
     headerStyle: {
       backgroundColor: Colors.primary,
