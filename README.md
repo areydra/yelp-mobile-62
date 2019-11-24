@@ -32,7 +32,7 @@ List transactions
 ## Screenshots
   <p align="center">
     <span>
-      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif78a784b17e661275.gif" width="250px" />
+      <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-1e99dae07aed10fad.gif" width="250px" />
       &nbsp;&nbsp;
       <img src="https://s5.gifyu.com/images/ezgif.com-video-to-gif-1e99dae07aed10fad.gif" width="250px" />
     </span>
